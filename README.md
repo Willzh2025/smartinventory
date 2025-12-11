@@ -180,7 +180,9 @@ This deterministic forecast is then used as input ($D_i$) to the optimization mo
 
 ## Example Output
 
-![Optimization Output Screenshot](picture/screenshot-02.png)
+👉 **Try the Live Demo:** [SmartInventory Planner](https://willzh2025-smartinventory-planner.streamlit.app/)
+
+![Screenshot 02](picture/Screenshot-02.png)
 
 The application provides:
 - **Recommended order quantities** for each SKU
