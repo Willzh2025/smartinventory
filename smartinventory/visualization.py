@@ -152,6 +152,7 @@ def create_results_table(
         DataFrame with results
     """
     results = []
+    results_raw = []
     
     for _, row in sku_data.iterrows():
         sku = row['sku']
@@ -164,6 +165,21 @@ def create_results_table(
         holding = row['holding_cost'] * (Q / 2)
         shortage = row['stockout_penalty'] * s
         total_cost = purchasing + fixed + holding + shortage
+
+        # -----------------------------
+        # NEW: raw row (all numeric)
+        # -----------------------------
+        results_raw.append({
+            "SKU": sku,
+            "Demand Forecast": D,
+            "Order Quantity (Q)": Q,
+            "Shortage": s,
+            "Purchasing Cost": purchasing,
+            "Fixed Cost": fixed,
+            "Holding Cost": holding,
+            "Shortage Cost'": shortage,
+            "Total Cost": total_cost
+        })
         
         results.append({
             'SKU': sku,
@@ -178,6 +194,7 @@ def create_results_table(
         })
     
     df_results = pd.DataFrame(results)
-    
-    return df_results
+    df_results_raw = pd.DataFrame(results_raw)
+
+    return df_results, df_results_raw
 

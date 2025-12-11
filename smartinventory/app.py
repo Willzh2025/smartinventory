@@ -210,7 +210,7 @@ if run_optimization or st.session_state.results is not None:
             
             # Results table
             st.subheader("📋 Detailed Results")
-            results_table = create_results_table(
+            results_table, results_table_raw = create_results_table(
                 sku_data,
                 order_quantities,
                 shortages,
@@ -227,6 +227,7 @@ if run_optimization or st.session_state.results is not None:
             # Insights & Recommendations
             insights_text = generate_insights(
                 results_table,
+                results_table_raw,
                 budget=budget,
                 total_cost=total_cost,
                 capacity=capacity,

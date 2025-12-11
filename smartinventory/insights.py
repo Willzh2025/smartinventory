@@ -9,6 +9,7 @@ from typing import Optional
 
 def generate_insights(
     results_df: pd.DataFrame,
+    results_df_raw: pd.DataFrame,
     budget: Optional[float] = None,
     total_cost: Optional[float] = None,
     capacity: Optional[float] = None,
@@ -36,7 +37,8 @@ def generate_insights(
     
     # Create a working copy with numeric columns
     df = results_df.copy()
-    
+    df_raw = results_df_raw.copy()
+
     # Parse numeric columns (handle formatted strings)
     df['Order_Qty'] = df['Order Quantity (Q)'].apply(parse_float)
     df['Demand_Numeric'] = df['Demand Forecast'].apply(parse_float)
@@ -47,6 +49,30 @@ def generate_insights(
     # Calculate total purchasing cost and total budget used (purchasing + fixed)
     total_purchase = df['Purchasing_Cost_Numeric'].sum()
     total_fixed = df['Fixed_Cost_Numeric'].sum()
+    total_budget_used = total_purchase + total_fixed
+
+    # ------------------------------------------------------------------------------
+    # Fix Note (2025-12-11):
+    # Previously, the budget utilization was computed using values from
+    # `results_table`, where costs were stored as formatted strings (e.g., "$123.45").
+    # These values had already been rounded for display, which introduced small
+    # numerical discrepancies when summing totals and calculating budget percentages.
+    #
+    # To ensure full numerical accuracy, the calculation below now uses
+    # `results_table_raw`, which contains the true unformatted float values produced
+    # directly from the optimization model.
+    #
+    # total_purchase      = sum of (unit_cost * order_quantity) for all SKUs  
+    # total_fixed         = sum of fixed_order_cost for all SKUs with Q > 0  
+    # total_budget_used   = total_purchase + total_fixed  
+    #
+    # This guarantees consistency with the optimization model's internal constraints
+    # and prevents misleading discrepancies in budget utilization due to display
+    # formatting or rounding.
+    # ------------------------------------------------------------------------------
+
+    total_purchase = df_raw['Purchasing Cost'].sum()
+    total_fixed = df_raw['Fixed Cost'].sum()
     total_budget_used = total_purchase + total_fixed
     
     # A. Budget Utilization
@@ -85,7 +111,7 @@ def generate_insights(
     insights_parts.append("1. Budget & Capacity Utilization")
     if budget_used_pct is not None:
         # Show purchasing cost in the dollar amount as per user format
-        insights_parts.append(f"   - Budget used: {budget_used_pct:.1f}% (\\${total_purchase:,.2f} of \\${budget_limit:,.2f})")
+        insights_parts.append(f"   - Budget used: {budget_used_pct:.1f}% (\\${total_budget_used:,.2f} of \\${budget_limit:,.2f})")
     if capacity_used_pct is not None:
         insights_parts.append(f"   - Capacity used: {capacity_used_pct:.1f}% ({total_volume:,.0f} of {capacity_limit:,.0f} units)")
     
