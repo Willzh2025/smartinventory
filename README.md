@@ -54,7 +54,7 @@ We formulate the inventory planning problem as a **mixed-integer program (MIP)**
 
 ## Live Demo
 
-**Demo Link**: https://willzh2025-smartinventory-planner.streamlit.app/
+👉 **Try the Live Demo:** [SmartInventory Planner](https://willzh2025-smartinventory-planner.streamlit.app/)
 
 **Screenshot**:
 ![Screenshot](picture/Screenshot-01.png)
