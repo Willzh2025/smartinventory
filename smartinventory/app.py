@@ -231,7 +231,8 @@ if run_optimization or st.session_state.results is not None:
                 budget=budget,
                 total_cost=total_cost,
                 capacity=capacity,
-                total_volume=total_volume
+                total_volume=total_volume,
+                model_choice=model_choice
             )
             st.markdown("## Insights & Recommendations")
             st.markdown(insights_text)

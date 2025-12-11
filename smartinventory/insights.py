@@ -13,7 +13,8 @@ def generate_insights(
     budget: Optional[float] = None,
     total_cost: Optional[float] = None,
     capacity: Optional[float] = None,
-    total_volume: Optional[float] = None
+    total_volume: Optional[float] = None,
+    model_choice: Optional[str] = None
 ) -> str:
     """
     Generates structured, human-readable insights based on optimization results.
@@ -25,7 +26,10 @@ def generate_insights(
         total_cost: Optional total cost from optimization
         capacity: Optional capacity constraint value
         total_volume: Optional total volume used
-        
+        model_type:
+            "Model A" → Cost Minimization MIP (budget includes purchasing + fixed)
+            "Model B" → Service-Level Model (budget includes purchasing only)
+            
     Returns:
         Markdown-formatted string with insights
     """
@@ -79,7 +83,10 @@ def generate_insights(
     budget_used_pct = None
     budget_limit = budget
     if budget is not None and total_budget_used is not None and budget > 0:
-        budget_used_pct = (total_budget_used / budget) * 100
+        if "Model A" in model_choice:
+            budget_used_pct = (total_budget_used / budget) * 100
+        else:  # Model B's constraint: budget = purchasing ONLY
+            budget_used_pct = (total_purchase / budget) * 100
     
     # B. Capacity Utilization
     capacity_used_pct = None
@@ -99,7 +106,18 @@ def generate_insights(
     
     # F. Purchasing cost concentration
     df['_temp_purchase'] = df['Purchasing Cost'].apply(parse_float)
-    top_purchase = df.nlargest(3, '_temp_purchase')[['SKU', 'Purchasing Cost']].copy()
+    
+    # Filter only SKUs that were actually purchased (Q > 0 OR purchasing cost > 0)
+    df_nonzero_purchase = df[df['_temp_purchase'] > 0].copy()
+
+    if len(df_nonzero_purchase) > 0:
+        # Take the top 3 actual spending SKUs
+        top_purchase = df_nonzero_purchase.nlargest(3, '_temp_purchase')[['SKU', 'Purchasing Cost']].copy()
+    else:
+        # No purchasing at all
+        top_purchase = pd.DataFrame(columns=['SKU', 'Purchasing Cost'])
+
+    # top_purchase = df.nlargest(3, '_temp_purchase')[['SKU', 'Purchasing Cost']].copy()
     top_purchase_sum = top_purchase['Purchasing Cost'].apply(parse_float).sum()
     pct_purchase = (top_purchase_sum / total_purchase * 100) if total_purchase > 0 else 0
     df.drop('_temp_purchase', axis=1, inplace=True)
@@ -111,7 +129,16 @@ def generate_insights(
     insights_parts.append("1. Budget & Capacity Utilization")
     if budget_used_pct is not None:
         # Show purchasing cost in the dollar amount as per user format
-        insights_parts.append(f"   - Budget used: {budget_used_pct:.1f}% (\\${total_budget_used:,.2f} of \\${budget_limit:,.2f})")
+        # insights_parts.append(f"   - Budget used: {budget_used_pct:.1f}% (\\${total_budget_used:,.2f} of \\${budget_limit:,.2f})")
+        if "Model A" in model_choice:
+            # Model A budget = purchasing + fixed
+            insights_parts.append(f"   - Budget used: {budget_used_pct:.1f}% (\\${total_budget_used:,.2f} of \\${budget_limit:,.2f})")
+            insights_parts.append(f"      - Includes purchasing (\\${total_purchase:,.2f}) + fixed order cost (\\${total_fixed:,.2f})")
+        else:
+            # Model B budget = purchasing ONLY
+            insights_parts.append(f"   - Budget used: {budget_used_pct:.1f}% (\\${total_purchase:,.2f} of \\${budget_limit:,.2f})")
+            insights_parts.append(f"      - Note: Model B does NOT include fixed order cost in optimization.")
+            insights_parts.append(f"      - Actual spending including fixed cost: "f"\\${(total_purchase + total_fixed):,.2f} = purchasing cost (\\${total_purchase:,.2f}) + fixed order cost (\\${total_fixed:,.2f})")
     if capacity_used_pct is not None:
         insights_parts.append(f"   - Capacity used: {capacity_used_pct:.1f}% ({total_volume:,.0f} of {capacity_limit:,.0f} units)")
     
