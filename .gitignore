@@ -1,0 +1,18 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Streamlit
+.streamlit/
+
+# Virtual environments
+venv/
+env/
+
+# macOS files
+.DS_Store
+
+# Jupyter
+.ipynb_checkpoints/
