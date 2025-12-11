@@ -248,14 +248,19 @@ This project was developed for **ISOM 839 - Prescriptive Analytics (Fall 2025)**
 - Translation of business problems into mathematical models
 
 **Project Structure**:
-```
+```text
 smartinventory/
-├── app.py                 # Streamlit frontend
-├── optimizer.py           # Optimization models (Gurobi + SciPy)
-├── data_loader.py         # Data loading and forecasting
-├── visualization.py       # Chart generation
-├── sample_data/           # Sample CSV files
-└── README.md              # This file
+│
+├── sample_data/
+│   ├── sales_history_sample.csv
+│   └── sku_costs_sample.csv
+│
+├── __init__.py
+├── app.py
+├── data_loader.py
+├── insights.py
+├── optimizer.py
+└── visualization.py
 ```
 
 ---

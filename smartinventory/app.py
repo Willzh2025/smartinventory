@@ -12,6 +12,7 @@ from pathlib import Path
 from data_loader import prepare_optimization_data, forecast_demand_moving_average, load_sales_data
 from optimizer import solve_model_a_mip, solve_model_b_service_level
 from visualization import create_order_quantity_chart, create_cost_breakdown_chart, create_results_table
+from insights import generate_insights
 
 # Page configuration
 st.set_page_config(
@@ -216,6 +217,23 @@ if run_optimization or st.session_state.results is not None:
                 binding_constraints
             )
             st.dataframe(results_table, use_container_width=True, hide_index=True)
+            
+            # Calculate total volume for capacity utilization
+            total_volume = sum(
+                sku_data[sku_data['sku'] == sku]['volume'].values[0] * q
+                for sku, q in order_quantities.items()
+            )
+            
+            # Insights & Recommendations
+            insights_text = generate_insights(
+                results_table,
+                budget=budget,
+                total_cost=total_cost,
+                capacity=capacity,
+                total_volume=total_volume
+            )
+            st.markdown("## Insights & Recommendations")
+            st.markdown(insights_text)
             
             # Download results
             st.subheader("💾 Export Results")
