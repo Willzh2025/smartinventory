@@ -54,12 +54,10 @@ We formulate the inventory planning problem as a **mixed-integer program (MIP)**
 
 ## Live Demo
 
-**Demo Link**: [Placeholder - Add Streamlit Cloud/Heroku link here]
+**Demo Link**: https://willzh2025-smartinventory-planner.streamlit.app/
 
 **Screenshot**:
-![App Screenshot](screenshot_placeholder.png)
-
-*Note: Replace with actual screenshot of the running application*
+![Live Demo Screenshot](picture/screenshot-01.png)
 
 ---
 
@@ -182,9 +180,7 @@ This deterministic forecast is then used as input ($D_i$) to the optimization mo
 
 ## Example Output
 
-![Example Results](example_output_placeholder.png)
-
-*Note: Replace with actual screenshot showing side-by-side charts and results table*
+![Optimization Output Screenshot](picture/screenshot-02.png)
 
 The application provides:
 - **Recommended order quantities** for each SKU
@@ -296,6 +292,7 @@ This project is developed for educational purposes as part of ISOM 839 coursewor
 
 ## Author
 
-[Your Name]  
+**Author: Will Zhong**
+
 ISOM 839 - Prescriptive Analytics  
 Fall 2025
