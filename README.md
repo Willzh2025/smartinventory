@@ -88,6 +88,26 @@ The application presents **actionable recommendations**:
 - **Results Table**: Detailed metrics including demand forecasts, optimal order quantities, expected shortages, and cost breakdowns
 - **Insights**: Plain-language summary (e.g., "Budget constraint is binding; SKUs X and Y account for 60% of total spend")
 
+### What-If Analysis & Scenario Exploration
+
+SmartInventory Planner supports interactive what-if analysis through user-controlled parameters and model selection.
+
+Decision-makers can explore alternative scenarios by adjusting:
+
+- **Budget limits**: Observe how optimal order quantities shift when financial constraints tighten or relax.
+- **Storage capacity**: Identify whether warehouse space is the binding constraint and how it affects SKU prioritization.
+- **Forecast horizon**: Examine the impact of short-term vs. longer-term planning on inventory decisions.
+- **Optimization model**: Compare cost-minimization (Model A) versus service-level prioritization (Model B).
+
+Each adjustment triggers a full re-optimization of the inventory plan, enabling users to perform real-time scenario analysis and understand trade-offs between cost efficiency, service level, and resource constraints.
+
+This interactive scenario exploration allows managers to answer practical questions such as:
+- “What happens if my budget increases by 10%?”
+- “Which SKUs are dropped first when budget becomes tight?”
+- “How much additional budget is needed to eliminate shortages?”
+
+By enabling rapid what-if analysis, the application supports informed, data-driven decision-making under uncertainty.
+
 ---
 
 ## The Analytics Behind It
