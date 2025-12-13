@@ -300,9 +300,8 @@ Potential enhancements and extensions:
 
 ## Demo Video
 
-**Video Link**: [Placeholder - Add YouTube/Vimeo link here]
-
-*Note: Replace with actual demo video link*
+🎥 **Project Demo**  
+[Watch the demo video](https://www.loom.com/share/732fbf19fc014ddea04edf73414fcca9)
 
 ---
 
